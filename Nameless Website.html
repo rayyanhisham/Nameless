@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nameless Clothing Co.</title>
+    <style>
+        /* ... (keep previous styles) ... */
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: white;
+            padding: 1rem 5%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .navbar h1 {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2.5rem;
+            margin: 0;
+        }
+
+        .categories {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 5%;
+            background: #f8f8f8;
+        }
+
+        .category-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 20px;
+            background: #eee;
+            cursor: pointer;
+        }
+
+        .category-btn.active {
+            background: #333;
+            color: white;
+        }
+
+        .product-category {
+            margin: 2rem 5%;
+        }
+
+        .category-title {
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>NAMELESS</h1>
+        <button onclick="toggleCart()">Cart <span class="cart-counter" id="cartCount">0</span></button>
+    </nav>
+
+    <div class="categories">
+        <button class="category-btn active" onclick="filterProducts('all')">All</button>
+        <button class="category-btn" onclick="filterProducts('t-shirts')">T-Shirts</button>
+        <button class="category-btn" onclick="filterProducts('shirts')">Shirts</button>
+        <button class="category-btn" onclick="filterProducts('pants')">Pants</button>
+        <button class="category-btn" onclick="filterProducts('shorts')">Shorts</button>
+        <button class="category-btn" onclick="filterProducts('accessories')">Accessories</button>
+    </div>
+
+    <div id="productsContainer">
+        <!-- Category sections will be inserted here -->
+    </div>
+
+    <!-- ... (keep cart modal and previous script sections) ... -->
+
+    <script>
+        // Updated Products with Categories
+        const products = [
+            {id: 1, name: "Classic Tee", price: 29.99, image: "https://via.placeholder.com/200", category: "t-shirts"},
+            {id: 2, name: "Formal Shirt", price: 49.99, image: "https://via.placeholder.com/200", category: "shirts"},
+            {id: 3, name: "Slim Fit Jeans", price: 89.99, image: "https://via.placeholder.com/200", category: "pants"},
+            {id: 4, name: "Cargo Shorts", price: 39.99, image: "https://via.placeholder.com/200", category: "shorts"},
+            {id: 5, name: "Designer Belt", price: 59.99, image: "https://via.placeholder.com/200", category: "accessories"},
+            {id: 6, name: "Graphic Tee", price: 34.99, image: "https://via.placeholder.com/200", category: "t-shirts"},
+            {id: 7, name: "Chino Pants", price: 79.99, image: "https://via.placeholder.com/200", category: "pants"},
+            {id: 8, name: "Silk Scarf", price: 29.99, image: "https://via.placeholder.com/200", category: "accessories"},
+        ];
+
+        // Initialize products by category
+        function initProducts() {
+            const container = document.getElementById('productsContainer');
+            const categories = [...new Set(products.map(product => product.category))];
+            
+            // Create category sections
+            categories.forEach(category => {
+                const section = document.createElement('section');
+                section.className = 'product-category';
+                section.setAttribute('data-category', category);
+                section.innerHTML = `
+                    <h2 class="category-title">${category.charAt(0).toUpperCase() + category.slice(1)}</h2>
+                    <div class="products-container"></div>
+                `;
+                
+                const productsGrid = section.querySelector('.products-container');
+                products.filter(p => p.category === category).forEach(product => {
+                    productsGrid.innerHTML += `
+                        <div class="product-card">
+                            <img src="${product.image}" class="product-image" alt="${product.name}">
+                            <h3>${product.name}</h3>
+                            <p>$${product.price}</p>
+                            <button class="add-to-cart" onclick="addToCart(${product.id})">Add to Cart</button>
+                        </div>
+                    `;
+                });
+                
+                container.appendChild(section);
+            });
+        }
+
+        // Filter products by category
+        function filterProducts(category) {
+            document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.querySelectorAll('.product-category').forEach(section => {
+                if (category === 'all') {
+                    section.style.display = 'block';
+                } else {
+                    section.style.display = section.dataset.category === category ? 'block' : 'none';
+                }
+            });
+        }
+
+        // Initialize the page
+        initProducts();
+    </script>
+</body>
+</html>
